@@ -1,11 +1,10 @@
 class Pelicula:
-    def __init__(self, titulo: str, director: str, anio: int, genero: str, valoracion: float = 0.0):
+    def __init__(self, titulo: str, director: str, estreno: int, genero: str, valoracion: float = 0.0):
         self._titulo = titulo
         self._director = director
-        self._anio = anio
+        self._estreno = estreno
         self._genero = genero
         self._valoracion = valoracion
-        self._actores = []
 
     @property
     def titulo(self) -> str:
@@ -17,7 +16,7 @@ class Pelicula:
 
     @property
     def anio(self) -> int:
-        return self._anio
+        return self._estreno
 
     @property
     def genero(self) -> str:
@@ -27,13 +26,6 @@ class Pelicula:
     def valoracion(self) -> float:
         return self._valoracion
 
-    @property
-    def actores(self) -> list[str]:
-        return list(self._actores)
-
-    def agregar_actor(self, actor: str) -> None:
-        self._actores.append(actor)
-
     def es_del_genero(self, genero: str) -> bool:
         return self._genero.lower() == genero.lower()
 
@@ -41,4 +33,4 @@ class Pelicula:
         return self.es_del_genero(otra.genero)
 
     def __repr__(self) -> str:
-        return f"Pelicula({self._titulo}, {self._anio}, {self._genero}, {self._valoracion})"
+        return f"Pelicula({self._titulo}, {self._estreno}, {self._genero}, {self._valoracion})"
