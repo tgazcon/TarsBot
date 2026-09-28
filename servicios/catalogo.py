@@ -1,7 +1,7 @@
 import json
 
 from modelos.pelicula import Pelicula
-
+from servicios.arbol import ArbolPeliculas, crear_arbol_equilibrado
 
 def cargar(ruta: str) -> list[Pelicula]:
     with open(ruta, encoding="utf-8") as archivo:
@@ -33,3 +33,9 @@ def relacionadas(peliculas: list[Pelicula], pelicula: Pelicula) -> list[Pelicula
         p for p in peliculas
         if p is not pelicula and (p.genero == pelicula.genero or p.director == pelicula.director)
     ]
+def crear_arbol(peliculas: list[Pelicula]) -> ArbolPeliculas:
+    return crear_arbol_equilibrado(peliculas)
+
+
+def buscar_por_titulo_arbol(arbol: ArbolPeliculas, titulo: str) -> Pelicula | None:
+    return arbol.buscar(titulo)
