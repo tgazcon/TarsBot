@@ -29,3 +29,13 @@ Esto también coincide con la complejidad teórica. La búsqueda secuencial tien
 Las dos estrategias permiten realizar la búsqueda de películas, pero cada una tiene sus características. La búsqueda secuencial es más sencilla y puede ser suficiente para un catálogo pequeño. La búsqueda en árbol necesita una estructura adicional, pero puede ser conveniente cuando el catálogo es más grande y se realizan muchas búsquedas.
 
 Con esta comparación podemos observar que una misma necesidad puede resolverse de diferentes maneras y que la elección de la estrategia puede influir en el tiempo que tarda el programa.
+
+Uso del árbol en la versión 2 de la app
+
+A partir de esta comparación, en la versión 2 de TARSbot el árbol pasó a usarse en la aplicación. Al iniciar, el programa carga las películas y arma el árbol equilibrado una sola vez. Construirlo cuesta O(n log n), pero ese costo se paga al principio y después cada búsqueda cuesta O(log n).
+
+La opción 1 (buscar película) y la opción 4 (películas relacionadas) buscan el título en el árbol en lugar de recorrer la lista.
+
+Además se agregó la opción 5, que muestra el catálogo completo ordenado de la A a la Z. Para eso se usa el recorrido inorder del árbol, que visita el subárbol izquierdo, después el nodo y por último el subárbol derecho. Como el árbol está ordenado por título, este recorrido devuelve las películas ya ordenadas en O(n), sin tener que ordenar la lista cada vez.
+
+El árbol también tiene los recorridos preorder (primero el nodo, después los hijos) y postorder (primero los hijos, después el nodo). El funcionamiento de los tres recorridos y de la búsqueda se verifica con las pruebas automáticas de `tests/test_arbol.py`.

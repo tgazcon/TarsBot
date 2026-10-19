@@ -52,6 +52,42 @@ class ArbolPeliculas:
         else:
             return self._buscar(actual.derecha, titulo)
 
+    def inorder(self):
+        resultado = []
+        self._inorder(self.raiz, resultado)
+        return resultado
+
+    def _inorder(self, actual, resultado):
+
+        if actual is not None:
+            self._inorder(actual.izquierda, resultado)
+            resultado.append(actual.pelicula)
+            self._inorder(actual.derecha, resultado)
+
+    def preorder(self):
+        resultado = []
+        self._preorder(self.raiz, resultado)
+        return resultado
+
+    def _preorder(self, actual, resultado):
+
+        if actual is not None:
+            resultado.append(actual.pelicula)
+            self._preorder(actual.izquierda, resultado)
+            self._preorder(actual.derecha, resultado)
+
+    def postorder(self):
+        resultado = []
+        self._postorder(self.raiz, resultado)
+        return resultado
+
+    def _postorder(self, actual, resultado):
+
+        if actual is not None:
+            self._postorder(actual.izquierda, resultado)
+            self._postorder(actual.derecha, resultado)
+            resultado.append(actual.pelicula)
+
 
 def crear_arbol_equilibrado(peliculas):
 
