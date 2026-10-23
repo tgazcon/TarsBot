@@ -15,6 +15,12 @@ En esta versión el catálogo se guarda también en un **árbol binario de búsq
   - Las opciones 1 (buscar) y 4 (relacionadas) buscan el título en el árbol en lugar de recorrer la lista.
   - La opción 5 lista el catálogo de la A a la Z con el recorrido inorder, que devuelve las películas ordenadas sin tener que ordenarlas.
 
+## Versión 3: AVL
+
+El BST de la versión 2 solo está equilibrado porque se arma con cuidado; si los títulos llegan ordenados degenera en una lista (búsqueda O(n)). Se agregó un **árbol AVL** ([servicios/avl.py](servicios/avl.py)) que se reequilibra solo con rotaciones al insertar, y un experimento que compara ambos árboles con datos ordenados, desordenados y con el catálogo real. Con las 30 películas en orden alfabético el BST llega a altura 30 y el AVL a 5.
+
+El análisis completo está en [Docs/07-AVL.md](Docs/07-AVL.md). El AVL es una pieza de estudio: la app sigue usando el BST equilibrado.
+
 ## Requisitos
 
 - Python 3.10 o superior (se desarrolló con Python 3.13)
@@ -45,18 +51,21 @@ Esto abre el menú interactivo en la terminal:
 Tarsbot/
 ├── main.py                  # Punto de entrada, solo arranca la terminal
 ├── prueba_complejidad.py    # Comparación de tiempos: búsqueda secuencial vs árbol
+├── prueba_avl.py            # Experimentos de desbalance: BST común vs AVL
 ├── modelos/
 │   └── pelicula.py           # Clase Pelicula (dominio, solo datos)
 ├── servicios/
 │   ├── arbol.py              # Árbol binario de búsqueda: inserción, búsqueda y recorridos
+│   ├── avl.py                # Árbol AVL: inserción con rotaciones, búsqueda y recorridos
 │   └── catalogo.py           # Lógica: cargar, buscar, filtrar, top, relacionadas, catálogo A-Z
 ├── ui/
 │   └── terminal.py           # Menú e interacción por input()
 ├── tests/
-│   └── test_arbol.py         # Pruebas automáticas del árbol
+│   ├── test_arbol.py         # Pruebas automáticas del BST
+│   └── test_avl.py           # Pruebas automáticas del AVL
 ├── datos/
 │   └── peliculas.json        # Catálogo con 30 películas
-└── Docs/                     # Requerimientos, casos de uso, diagramas e informe de complejidad
+└── Docs/                     # Requerimientos, casos de uso, diagramas e informes (complejidad y AVL)
 ```
 
 Cada capa tiene una responsabilidad única:
@@ -103,6 +112,16 @@ python prueba_complejidad.py
 ```
 
 Mide el tiempo de la búsqueda secuencial y de la búsqueda en el árbol con 100, 1.000 y 10.000 películas. El análisis está en [Docs/06- Prueba de complejidad.md](Docs/06-%20Prueba%20de%20complejidad.md).
+
+[tests/test_avl.py](tests/test_avl.py) verifica las cuatro rotaciones del AVL, que queda balanceado al insertar en orden ascendente, descendente y aleatorio, y que con el catálogo real el BST llega a altura 30 y el AVL a 5.
+
+### Experimentos de desbalance
+
+```bash
+python prueba_avl.py
+```
+
+Compara altura, tiempo de armado y tiempo de búsqueda del BST común contra el AVL con 100, 1.000 y 5.000 películas. Resultados y conclusión en [Docs/07-AVL.md](Docs/07-AVL.md).
 
 ### Pruebas manuales
 

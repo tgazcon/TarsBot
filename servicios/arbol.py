@@ -11,46 +11,65 @@ class ArbolPeliculas:
     def __init__(self):
         self.raiz = None
 
+    # Insertar y buscar son iterativos: con datos ordenados el árbol degenera
+    # en una lista y la recursión superaría el límite de Python.
     def insertar(self, pelicula):
         nuevo = Nodo(pelicula)
 
         if self.raiz is None:
             self.raiz = nuevo
-        else:
-            self._insertar(self.raiz, nuevo)
+            return
 
-    def _insertar(self, actual, nuevo):
+        clave = pelicula.titulo.lower()
+        actual = self.raiz
 
-        if nuevo.pelicula.titulo.lower() < actual.pelicula.titulo.lower():
-
-            if actual.izquierda is None:
-                actual.izquierda = nuevo
+        while True:
+            if clave < actual.pelicula.titulo.lower():
+                if actual.izquierda is None:
+                    actual.izquierda = nuevo
+                    return
+                actual = actual.izquierda
             else:
-                self._insertar(actual.izquierda, nuevo)
-
-        else:
-
-            if actual.derecha is None:
-                actual.derecha = nuevo
-            else:
-                self._insertar(actual.derecha, nuevo)
+                if actual.derecha is None:
+                    actual.derecha = nuevo
+                    return
+                actual = actual.derecha
 
     def buscar(self, titulo):
-        return self._buscar(self.raiz, titulo)
+        clave = titulo.lower()
+        actual = self.raiz
 
-    def _buscar(self, actual, titulo):
+        while actual is not None:
+            clave_actual = actual.pelicula.titulo.lower()
 
-        if actual is None:
-            return None
+            if clave == clave_actual:
+                return actual.pelicula
 
-        if actual.pelicula.titulo.lower() == titulo.lower():
-            return actual.pelicula
+            if clave < clave_actual:
+                actual = actual.izquierda
+            else:
+                actual = actual.derecha
 
-        if titulo.lower() < actual.pelicula.titulo.lower():
-            return self._buscar(actual.izquierda, titulo)
+        return None
 
-        else:
-            return self._buscar(actual.derecha, titulo)
+    def altura(self):
+        if self.raiz is None:
+            return 0
+
+        altura = 0
+        nivel = [self.raiz]
+
+        while nivel:
+            altura += 1
+            siguiente = []
+            for nodo in nivel:
+                if nodo.izquierda is not None:
+                    siguiente.append(nodo.izquierda)
+                if nodo.derecha is not None:
+                    siguiente.append(nodo.derecha)
+            nivel = siguiente
+
+        return altura
 
     def inorder(self):
         resultado = []
