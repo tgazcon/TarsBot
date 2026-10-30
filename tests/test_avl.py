@@ -126,3 +126,9 @@ class TestConCatalogo(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+# verifica las cuatro rotaciones sobre ejemplos de tres nodos (forma del árbol y cantidad de rotaciones),
+#  que después de insertar 1.000 títulos en orden ascendente, descendente y aleatorio todos los nodos tienen balance entre -1 y 1
+#  y su altura guardada es correcta, que la altura queda por debajo de 1,45 · log₂(n + 2), que el recorrido inorder sale ordenado,
+#  y que con el catálogo real el BST llega a altura 30 y el AVL a 5 con los mismos resultados de búsqueda.

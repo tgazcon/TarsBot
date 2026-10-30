@@ -13,14 +13,18 @@ def mostrar_menu() -> None:
     print("3. Top 10 películas")
     print("4. Películas relacionadas")
     print("5. Catálogo completo (A-Z)")
-    print("6. Salir")
+    print("6. Explorar categorías")
+    print("7. Salir")
 
 
 def mostrar_pelicula(pelicula: Pelicula) -> None:
     print(f"Título: {pelicula.titulo}")
     print(f"Director: {pelicula.director}")
     print(f"Año: {pelicula.estreno}")
-    print(f"Género: {pelicula.genero}")
+    if pelicula.subgenero:
+        print(f"Género: {pelicula.genero} / {pelicula.subgenero}")
+    else:
+        print(f"Género: {pelicula.genero}")
     print(f"Valoración: {pelicula.valoracion}")
 
 
@@ -29,13 +33,60 @@ def pedir_opcion() -> str:
     return input("Opción: ").strip()
 
 
+def mostrar_menu_categorias() -> None:
+    print("\n===== EXPLORAR CATEGORÍAS =====")
+    print("1. Ver el árbol de categorías")
+    print("2. Ver las películas de una categoría")
+    print("3. ¿En qué categoría está una película?")
+    print("4. Volver")
+
+
+def explorar_categorias(arbol_categorias) -> None:
+    mostrar_menu_categorias()
+    opcion = input("Opción: ").strip()
+
+    while opcion != "4":
+
+        if opcion == "1":
+            print()
+            for linea in catalogo.dibujar_categorias(arbol_categorias):
+                print(linea)
+
+        elif opcion == "2":
+            nombre = input("Ingrese la categoría: ")
+            resultado = catalogo.peliculas_de_categoria(arbol_categorias, nombre)
+            if resultado:
+                ruta, peliculas = resultado
+                print(f"\n{' > '.join(ruta)} ({len(peliculas)})")
+                for p in peliculas:
+                    print(f"- {p.titulo:<52} {p.estreno}")
+            else:
+                print("No se encontró la categoría.")
+
+        elif opcion == "3":
+            titulo = input("Ingrese el título: ")
+            resultado = catalogo.ubicar_pelicula(arbol_categorias, titulo)
+            if resultado:
+                pelicula, ruta = resultado
+                print(f"{pelicula.titulo} está en: {' > '.join(ruta)}")
+            else:
+                print("No se encontró la película.")
+
+        else:
+            print("Opción inválida.")
+
+        mostrar_menu_categorias()
+        opcion = input("Opción: ").strip()
+
+
 def iniciar() -> None:
     peliculas = catalogo.cargar(RUTA_DATOS)
     arbol = catalogo.crear_arbol(peliculas)
+    arbol_categorias = catalogo.crear_arbol_categorias(peliculas)
 
     opcion = pedir_opcion()
 
-    while opcion != "6":
+    while opcion != "7":
 
         if opcion == "1":
             titulo = input("Ingrese el título: ")
@@ -68,6 +119,9 @@ def iniciar() -> None:
             print("\n===== CATÁLOGO (A-Z) =====")
             for p in catalogo.listar_alfabetico(arbol):
                 print(f"- {p.titulo:<52} {p.estreno}")
+
+        elif opcion == "6":
+            explorar_categorias(arbol_categorias)
 
         else:
             print("Opción inválida.")

@@ -36,6 +36,6 @@ A partir de esta comparación, en la versión 2 de TARSbot el árbol pasó a usa
 
 La opción 1 (buscar película) y la opción 4 (películas relacionadas) buscan el título en el árbol en lugar de recorrer la lista.
 
-Además se agregó la opción 5, que muestra el catálogo completo ordenado de la A a la Z. Para eso se usa el recorrido inorder del árbol, que visita el subárbol izquierdo, después el nodo y por último el subárbol derecho. Como el árbol está ordenado por título, este recorrido devuelve las películas ya ordenadas en O(n), sin tener que ordenar la lista cada vez.
+Tambien se gregó la opción 5, que muestra el catálogo completo ordenado de la A a la Z. Para eso se usa el recorrido inorder del árbol, que ve el subárbol izquierdo, después el nodo y por último el subárbol derecho. Como el árbol está ordenado por títulos, el recorrido devuelve las películas ya ordenadas en O(n), sin tener que ordenar la lista cada recorrido.
 
 El árbol también tiene los recorridos preorder (primero el nodo, después los hijos) y postorder (primero los hijos, después el nodo). El funcionamiento de los tres recorridos y de la búsqueda se verifica con las pruebas automáticas de `tests/test_arbol.py`.

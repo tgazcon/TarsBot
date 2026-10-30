@@ -1,10 +1,11 @@
 class Pelicula:
-    def __init__(self, titulo: str, director: str, estreno: int, genero: str, valoracion: float = 0.0):
+    def __init__(self, titulo: str, director: str, estreno: int, genero: str, valoracion: float = 0.0, subgenero: str = ""):
         self._titulo = titulo
         self._director = director
         self._estreno = estreno
         self._genero = genero
         self._valoracion = valoracion
+        self._subgenero = subgenero
 
     @property
     def titulo(self) -> str:
@@ -21,6 +22,10 @@ class Pelicula:
     @property
     def genero(self) -> str:
         return self._genero
+
+    @property
+    def subgenero(self) -> str:
+        return self._subgenero
 
     @property
     def valoracion(self) -> float:
