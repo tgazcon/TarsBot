@@ -110,8 +110,9 @@ def iniciar() -> None:
             titulo = input("Ingrese el título: ")
             pelicula = catalogo.buscar_por_titulo_arbol(arbol, titulo)
             if pelicula:
-                for p in catalogo.relacionadas(peliculas, pelicula):
-                    print(f"- {p.titulo}")
+                print(f"\n======== TOP 5 PARA {pelicula.titulo.upper()} ========")
+                for i, (puntaje, p) in enumerate(catalogo.recomendar(peliculas, pelicula), start=1):
+                    print(f"{i}. {p.titulo:<40} {puntaje}")
             else:
                 print("No se encontró la película.")
 

@@ -3,6 +3,7 @@ import json
 from modelos.pelicula import Pelicula
 from servicios.arbol import ArbolPeliculas, crear_arbol_equilibrado
 from servicios.arbol_general import ArbolCategorias
+from servicios.heap import MonticuloMaximo
 
 def cargar(ruta: str) -> list[Pelicula]:
     with open(ruta, encoding="utf-8") as archivo:
@@ -25,8 +26,19 @@ def filtrar_por_genero(peliculas: list[Pelicula], genero: str) -> list[Pelicula]
     return [p for p in peliculas if p.genero.lower() == genero.lower()]
 
 
+def top_n(peliculas: list[Pelicula], cantidad: int, prioridad) -> list[tuple[float, Pelicula]]:
+    """Las `cantidad` películas de mayor prioridad como (prioridad, película): heap en O(n) y `cantidad` extracciones en O(log n)."""
+    monticulo = MonticuloMaximo.construir(peliculas, prioridad)
+    resultado = []
+
+    while len(resultado) < cantidad and not monticulo.esta_vacio():
+        resultado.append(monticulo.extraer_maximo())
+
+    return resultado
+
+
 def top_valoradas(peliculas: list[Pelicula], cantidad: int = 10) -> list[Pelicula]:
-    return sorted(peliculas, key=lambda p: p.valoracion, reverse=True)[:cantidad]
+    return [p for _, p in top_n(peliculas, cantidad, lambda p: p.valoracion)]
 
 
 def relacionadas(peliculas: list[Pelicula], pelicula: Pelicula) -> list[Pelicula]:
@@ -34,6 +46,32 @@ def relacionadas(peliculas: list[Pelicula], pelicula: Pelicula) -> list[Pelicula
         p for p in peliculas
         if p is not pelicula and (p.genero == pelicula.genero or p.director == pelicula.director)
     ]
+
+
+# La valoración es la base y el parecido con la película elegida la sube
+PESO_GENERO = 1.0
+PESO_SUBGENERO = 0.5
+PESO_DIRECTOR = 1.0
+
+
+def puntaje_recomendacion(candidata: Pelicula, referencia: Pelicula) -> float:
+    puntaje = candidata.valoracion
+
+    if candidata.genero == referencia.genero:
+        puntaje += PESO_GENERO
+
+    if candidata.subgenero and candidata.subgenero == referencia.subgenero:
+        puntaje += PESO_SUBGENERO
+
+    if candidata.director == referencia.director:
+        puntaje += PESO_DIRECTOR
+
+    return round(puntaje, 2)
+
+
+def recomendar(peliculas: list[Pelicula], referencia: Pelicula, cantidad: int = 5) -> list[tuple[float, Pelicula]]:
+    candidatas = relacionadas(peliculas, referencia)
+    return top_n(candidatas, cantidad, lambda p: puntaje_recomendacion(p, referencia))
 
 
 def crear_arbol(peliculas: list[Pelicula]) -> ArbolPeliculas:

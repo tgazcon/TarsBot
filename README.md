@@ -51,6 +51,25 @@ Películas (30)
 
 Ejemplos de recorridos, decisiones de diseño y complejidad en [Docs/08-Arbol-de-categorias.md](Docs/08-Arbol-de-categorias.md).
 
+## Versión 4: cola de prioridad (heap)
+
+Los rankings del sistema se obtienen con una **heap binaria de máximos** implementada a mano ([servicios/heap.py](servicios/heap.py)):
+
+- **Top 10** (opción 3): la prioridad es la valoración.
+- **Recomendaciones** (opción 4): a partir de una película, muestra un Top 5 de las relacionadas. La prioridad combina la valoración con un bonus por parecido: mismo género (+1,0), mismo subgénero (+0,5) y mismo director (+1,0).
+- **Top-N eficiente**: la heap se construye en O(n) y cada película pedida sale en O(log n), en total O(n + N log n), en lugar de ordenar todo el catálogo en cada consulta.
+
+```
+======== TOP 5 PARA INTERSTELLAR ========
+1. Inception                                10.8
+2. The Dark Knight                          10.0
+3. The Matrix                               9.7
+4. The Prestige                             9.5
+5. Blade Runner 2049                        9.0
+```
+
+La función de prioridad y la justificación de por qué una heap y no ordenar están en [Docs/09-Cola-de-prioridad.md](Docs/09-Cola-de-prioridad.md).
+
 ## Requisitos
 
 - Python 3.10 o superior (se desarrolló con Python 3.13)
@@ -90,16 +109,18 @@ Tarsbot/
 │   ├── arbol.py              # Árbol binario de búsqueda: inserción, búsqueda y recorridos
 │   ├── avl.py                # Árbol AVL: inserción con rotaciones, búsqueda y recorridos
 │   ├── arbol_general.py      # Árbol general de categorías: búsquedas, recorridos y dibujo
+│   ├── heap.py               # Heap binaria de máximos: insertar, extraer y construir
 │   └── catalogo.py           # Lógica: cargar, buscar, filtrar, top, relacionadas, catálogo A-Z, categorías
 ├── ui/
 │   └── terminal.py           # Menú e interacción por input()
 ├── tests/
 │   ├── test_arbol.py         # Pruebas automáticas del BST
 │   ├── test_avl.py           # Pruebas automáticas del AVL
-│   └── test_arbol_general.py # Pruebas automáticas del árbol de categorías
+│   ├── test_arbol_general.py # Pruebas automáticas del árbol de categorías
+│   └── test_heap.py          # Pruebas automáticas de la heap y los rankings
 ├── datos/
 │   └── peliculas.json        # Catálogo con 30 películas
-└── Docs/                     # Requerimientos, casos de uso, diagramas e informes (complejidad, AVL y categorías)
+└── Docs/                     # Requerimientos, casos de uso, diagramas e informes (complejidad, AVL, categorías y heap)
 ```
 
 Cada capa tiene una responsabilidad única:
@@ -112,8 +133,8 @@ Cada capa tiene una responsabilidad única:
 
 1. **Buscar película**: ingresa un título y muestra título, director, año, género y valoración. Busca en el árbol.
 2. **Explorar por género**: ingresa un género y lista las películas del catálogo que pertenecen a él.
-3. **Top 10**: muestra las 10 películas con mayor valoración.
-4. **Películas relacionadas**: a partir de un título (buscado en el árbol), lista otras películas del catálogo que comparten género o director.
+3. **Top 10**: muestra las 10 películas con mayor valoración, obtenidas con la heap.
+4. **Películas relacionadas**: a partir de un título (buscado en el árbol), muestra un Top 5 de las películas que comparten género o director, ordenadas por un puntaje que combina valoración y parecido.
 5. **Catálogo completo (A-Z)**: lista todas las películas ordenadas por título usando el recorrido inorder del árbol.
 6. **Explorar categorías**: abre un submenú para ver el árbol de categorías, listar las películas de una categoría (por ejemplo `Drama` o `Cyberpunk`) o saber en qué categoría está una película.
 7. **Salir**: termina el programa.
@@ -149,6 +170,8 @@ python -m unittest -v
 - Que agregar una película crea las categorías que faltan y reutiliza las existentes.
 - El dibujo del árbol con la cantidad de películas de cada categoría.
 - Con el catálogo real: que cada película queda en su género y subgénero, que un género incluye las películas de sus subgéneros y que los géneros sin subgéneros guardan las películas directamente.
+
+[tests/test_heap.py](tests/test_heap.py) verifica que la heap extrae de mayor a menor, el desempate por orden de entrada, que el Top 10 coincide con ordenar la lista y que el ranking de recomendaciones está ordenado y no incluye a la película elegida.
 
 ### Comparación de estrategias
 
