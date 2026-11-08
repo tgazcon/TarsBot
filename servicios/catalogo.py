@@ -3,6 +3,7 @@ import json
 from modelos.pelicula import Pelicula
 from servicios.arbol import ArbolPeliculas, crear_arbol_equilibrado
 from servicios.arbol_general import ArbolCategorias
+from servicios.grafo import GrafoPeliculas
 from servicios.heap import MonticuloMaximo
 
 def cargar(ruta: str) -> list[Pelicula]:
@@ -54,19 +55,24 @@ PESO_SUBGENERO = 0.5
 PESO_DIRECTOR = 1.0
 
 
-def puntaje_recomendacion(candidata: Pelicula, referencia: Pelicula) -> float:
-    puntaje = candidata.valoracion
+def afinidad(a: Pelicula, b: Pelicula) -> float:
+    """Qué tan parecidas son dos películas: suma de lo que comparten (0 si no comparten nada)."""
+    puntaje = 0.0
 
-    if candidata.genero == referencia.genero:
+    if a.genero == b.genero:
         puntaje += PESO_GENERO
 
-    if candidata.subgenero and candidata.subgenero == referencia.subgenero:
+    if a.subgenero and a.subgenero == b.subgenero:
         puntaje += PESO_SUBGENERO
 
-    if candidata.director == referencia.director:
+    if a.director == b.director:
         puntaje += PESO_DIRECTOR
 
-    return round(puntaje, 2)
+    return puntaje
+
+
+def puntaje_recomendacion(candidata: Pelicula, referencia: Pelicula) -> float:
+    return round(candidata.valoracion + afinidad(candidata, referencia), 2)
 
 
 def recomendar(peliculas: list[Pelicula], referencia: Pelicula, cantidad: int = 5) -> list[tuple[float, Pelicula]]:
@@ -101,6 +107,29 @@ def crear_arbol_categorias(peliculas: list[Pelicula]) -> ArbolCategorias:
         arbol.agregar_pelicula(pelicula, ruta)
 
     return arbol
+
+
+def crear_grafo(peliculas: list[Pelicula]) -> GrafoPeliculas:
+    grafo = GrafoPeliculas()
+
+    for pelicula in peliculas:
+        grafo.agregar_vertice(pelicula)
+
+    for i, a in enumerate(peliculas):
+        for b in peliculas[i + 1:]:
+            peso = afinidad(a, b)
+            if peso > 0:
+                grafo.agregar_arista(a, b, peso)
+
+    return grafo
+
+
+def conexiones_de(grafo: GrafoPeliculas, titulo: str) -> list[tuple[Pelicula, float]] | None:
+    return grafo.vecinos(titulo)
+
+
+def camino_entre(grafo: GrafoPeliculas, origen: str, destino: str) -> list[Pelicula] | None:
+    return grafo.camino_mas_corto(origen, destino)
 
 
 def dibujar_categorias(arbol: ArbolCategorias) -> list[str]:

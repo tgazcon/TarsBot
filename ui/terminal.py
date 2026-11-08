@@ -14,7 +14,8 @@ def mostrar_menu() -> None:
     print("4. Películas relacionadas")
     print("5. Catálogo completo (A-Z)")
     print("6. Explorar categorías")
-    print("7. Salir")
+    print("7. Red de películas")
+    print("8. Salir")
 
 
 def mostrar_pelicula(pelicula: Pelicula) -> None:
@@ -79,14 +80,59 @@ def explorar_categorias(arbol_categorias) -> None:
         opcion = input("Opción: ").strip()
 
 
+def mostrar_menu_red() -> None:
+    print("\n===== RED DE PELÍCULAS =====")
+    print("1. Ver las conexiones de una película")
+    print("2. Camino entre dos películas")
+    print("3. Volver")
+
+
+def explorar_red(grafo) -> None:
+    mostrar_menu_red()
+    opcion = input("Opción: ").strip()
+
+    while opcion != "3":
+
+        if opcion == "1":
+            titulo = input("Ingrese el título: ")
+            conexiones = catalogo.conexiones_de(grafo, titulo)
+            if conexiones is None:
+                print("No se encontró la película.")
+            else:
+                print(f"\nConexiones de {grafo.buscar(titulo).titulo} ({len(conexiones)})")
+                for p, peso in conexiones:
+                    print(f"- {p.titulo:<52} {peso}")
+
+        elif opcion == "2":
+            origen = input("Película de origen: ")
+            destino = input("Película de destino: ")
+            if grafo.buscar(origen) is None or grafo.buscar(destino) is None:
+                print("No se encontró alguna de las películas.")
+            else:
+                camino = catalogo.camino_entre(grafo, origen, destino)
+                if camino is None:
+                    print("No hay camino entre esas películas.")
+                else:
+                    print(" -> ".join(p.titulo for p in camino))
+                    saltos = len(camino) - 1
+                    print(f"({saltos} {'salto' if saltos == 1 else 'saltos'})")
+
+        else:
+            print("Opción inválida.")
+
+        mostrar_menu_red()
+        opcion = input("Opción: ").strip()
+
+
 def iniciar() -> None:
     peliculas = catalogo.cargar(RUTA_DATOS)
     arbol = catalogo.crear_arbol(peliculas)
     arbol_categorias = catalogo.crear_arbol_categorias(peliculas)
+    grafo = catalogo.crear_grafo(peliculas)
 
     opcion = pedir_opcion()
 
-    while opcion != "7":
+    while opcion != "8":
 
         if opcion == "1":
             titulo = input("Ingrese el título: ")
@@ -123,6 +169,9 @@ def iniciar() -> None:
 
         elif opcion == "6":
             explorar_categorias(arbol_categorias)
+
+        elif opcion == "7":
+            explorar_red(grafo)
 
         else:
             print("Opción inválida.")

@@ -70,6 +70,19 @@ Los rankings del sistema se obtienen con una **heap binaria de máximos** implem
 
 La función de prioridad y la justificación de por qué una heap y no ordenar están en [Docs/09-Cola-de-prioridad.md](Docs/09-Cola-de-prioridad.md).
 
+## Versión 5: grafo de películas
+
+Las relaciones entre películas se modelan como un **grafo** ([servicios/grafo.py](servicios/grafo.py)):
+
+- **Vértice**: una película.
+- **Arista**: dos películas conectadas si comparten género o director.
+- **Peso**: la afinidad (+1,0 mismo género, +0,5 mismo subgénero, +1,0 mismo director).
+- **Tipo**: no dirigido y pesado, porque el parecido es simétrico y no todas las relaciones valen lo mismo.
+- **Representación**: lista de adyacencia, porque el grafo es poco denso (118 de 435 aristas posibles) y lo que más se consulta son los vecinos de una película.
+- **Uso en la app**: la opción 7 (Red de películas) muestra las conexiones de una película, de la más fuerte a la más débil, y el camino más corto entre dos películas.
+
+La justificación y ejemplos de consultas están en [Docs/10-Grafo.md](Docs/10-Grafo.md).
+
 ## Requisitos
 
 - Python 3.10 o superior (se desarrolló con Python 3.13)
@@ -92,7 +105,8 @@ Esto abre el menú interactivo en la terminal:
 4. Películas relacionadas
 5. Catálogo completo (A-Z)
 6. Explorar categorías
-7. Salir
+7. Red de películas
+8. Salir
 ```
 
 ## Estructura del proyecto
@@ -110,6 +124,7 @@ Tarsbot/
 │   ├── avl.py                # Árbol AVL: inserción con rotaciones, búsqueda y recorridos
 │   ├── arbol_general.py      # Árbol general de categorías: búsquedas, recorridos y dibujo
 │   ├── heap.py               # Heap binaria de máximos: insertar, extraer y construir
+│   ├── grafo.py              # Grafo de películas (lista de adyacencia): vecinos y camino más corto
 │   └── catalogo.py           # Lógica: cargar, buscar, filtrar, top, relacionadas, catálogo A-Z, categorías
 ├── ui/
 │   └── terminal.py           # Menú e interacción por input()
@@ -117,10 +132,11 @@ Tarsbot/
 │   ├── test_arbol.py         # Pruebas automáticas del BST
 │   ├── test_avl.py           # Pruebas automáticas del AVL
 │   ├── test_arbol_general.py # Pruebas automáticas del árbol de categorías
-│   └── test_heap.py          # Pruebas automáticas de la heap y los rankings
+│   ├── test_heap.py          # Pruebas automáticas de la heap y los rankings
+│   └── test_grafo.py         # Pruebas automáticas del grafo
 ├── datos/
 │   └── peliculas.json        # Catálogo con 30 películas
-└── Docs/                     # Requerimientos, casos de uso, diagramas e informes (complejidad, AVL, categorías y heap)
+└── Docs/                     # Requerimientos, casos de uso, diagramas e informes (complejidad, AVL, categorías, heap y grafo)
 ```
 
 Cada capa tiene una responsabilidad única:
@@ -137,7 +153,8 @@ Cada capa tiene una responsabilidad única:
 4. **Películas relacionadas**: a partir de un título (buscado en el árbol), muestra un Top 5 de las películas que comparten género o director, ordenadas por un puntaje que combina valoración y parecido.
 5. **Catálogo completo (A-Z)**: lista todas las películas ordenadas por título usando el recorrido inorder del árbol.
 6. **Explorar categorías**: abre un submenú para ver el árbol de categorías, listar las películas de una categoría (por ejemplo `Drama` o `Cyberpunk`) o saber en qué categoría está una película.
-7. **Salir**: termina el programa.
+7. **Red de películas**: abre un submenú para ver las conexiones de una película (de la más fuerte a la más débil) o el camino más corto entre dos películas.
+8. **Salir**: termina el programa.
 
 ## Pruebas
 
@@ -172,6 +189,8 @@ python -m unittest -v
 - Con el catálogo real: que cada película queda en su género y subgénero, que un género incluye las películas de sus subgéneros y que los géneros sin subgéneros guardan las películas directamente.
 
 [tests/test_heap.py](tests/test_heap.py) verifica que la heap extrae de mayor a menor, el desempate por orden de entrada, que el Top 10 coincide con ordenar la lista y que el ranking de recomendaciones está ordenado y no incluye a la película elegida.
+
+[tests/test_grafo.py](tests/test_grafo.py) verifica, con el grafo de ejemplo de la consigna, que es no dirigido y que el camino más corto funciona (incluyendo los casos sin camino), y con el catálogo real que el peso de las aristas es la afinidad.
 
 ### Comparación de estrategias
 

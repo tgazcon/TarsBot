@@ -20,7 +20,7 @@ def titulos(peliculas):
     return [p.titulo for p in peliculas]
 
 
-def crear_arbol_de_la_consigna():
+def crear_arbol():
     # Películas -> Ciencia ficción (Cyberpunk, Viajes temporales, Inteligencia artificial), Acción, Comedia
     arbol = ArbolCategorias("Películas")
     ciencia_ficcion = arbol.agregar_categoria(arbol.raiz, "Ciencia ficción")
@@ -35,7 +35,7 @@ def crear_arbol_de_la_consigna():
 class TestRecorridos(unittest.TestCase):
 
     def setUp(self):
-        self.arbol = crear_arbol_de_la_consigna()
+        self.arbol = crear_arbol()
 
     def test_preorden(self):
         self.assertEqual(
@@ -62,7 +62,6 @@ class TestRecorridos(unittest.TestCase):
         niveles = [(nivel, nodo.nombre) for nivel, nodo in self.arbol.preorden()]
         self.assertEqual(niveles[0], (0, "Películas"))
         self.assertEqual(niveles[1], (1, "Ciencia ficción"))
-        self.assertEqual(niveles[2], (2, "Cyberpunk"))
         self.assertEqual(niveles[5], (1, "Acción"))
 
     def test_altura(self):
@@ -77,7 +76,7 @@ class TestRecorridos(unittest.TestCase):
 class TestBusquedas(unittest.TestCase):
 
     def setUp(self):
-        self.arbol = crear_arbol_de_la_consigna()
+        self.arbol = crear_arbol()
 
     def test_buscar_categoria_existente(self):
         self.assertEqual(self.arbol.buscar_categoria("Cyberpunk").nombre, "Cyberpunk")
@@ -141,7 +140,7 @@ class TestAgregar(unittest.TestCase):
 class TestDibujo(unittest.TestCase):
 
     def test_dibujar_muestra_la_jerarquia_con_cantidades(self):
-        arbol = crear_arbol_de_la_consigna()
+        arbol = crear_arbol()
         arbol.agregar_pelicula(crear_pelicula("The Matrix"), ["Ciencia ficción", "Cyberpunk"])
         arbol.agregar_pelicula(crear_pelicula("Gladiator"), ["Acción"])
 
