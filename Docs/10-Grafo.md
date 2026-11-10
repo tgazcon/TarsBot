@@ -52,11 +52,11 @@ Conexiones de Inception (5)
 Camino entre dos películas, que no comparten nada de forma directa:
 
 ```
-The Matrix -> Interstellar -> The Dark Knight -> Gladiator
+The Matrix -> Inception -> The Dark Knight -> Gladiator
 (3 saltos)
 ```
 
-Matrix e Interstellar son de ciencia ficción, Interstellar y The Dark Knight son del mismo director (Nolan), y The Dark Knight y Gladiator son de acción.
+Matrix e Inception son de ciencia ficción, Inception y The Dark Knight son del mismo director (Nolan), y The Dark Knight y Gladiator son de acción.
 
 Con Coco y Toy Story pasa algo distinto: solo se parecen entre sí, así que forman un grupo aislado.
 

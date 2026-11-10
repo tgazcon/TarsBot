@@ -84,14 +84,16 @@ def mostrar_menu_red() -> None:
     print("\n===== RED DE PELÍCULAS =====")
     print("1. Ver las conexiones de una película")
     print("2. Camino entre dos películas")
-    print("3. Volver")
+    print("3. Grados de separación (BFS)")
+    print("4. Explorar en profundidad (DFS)")
+    print("5. Volver")
 
 
 def explorar_red(grafo) -> None:
     mostrar_menu_red()
     opcion = input("Opción: ").strip()
 
-    while opcion != "3":
+    while opcion != "5":
 
         if opcion == "1":
             titulo = input("Ingrese el título: ")
@@ -116,6 +118,35 @@ def explorar_red(grafo) -> None:
                     print(" -> ".join(p.titulo for p in camino))
                     saltos = len(camino) - 1
                     print(f"({saltos} {'salto' if saltos == 1 else 'saltos'})")
+
+        elif opcion == "3":
+            titulo = input("Ingrese el título: ")
+            niveles = catalogo.grados_de_separacion(grafo, titulo)
+            if niveles is None:
+                print("No se encontró la película.")
+            elif not niveles:
+                print(f"{grafo.buscar(titulo).titulo} no tiene ninguna película relacionada.")
+            else:
+                print(f"\nGrados de separación desde {grafo.buscar(titulo).titulo}")
+                for distancia, peliculas_nivel in niveles:
+                    print(f"\nA {distancia} {'salto' if distancia == 1 else 'saltos'} ({len(peliculas_nivel)}):")
+                    for p in peliculas_nivel:
+                        print(f"- {p.titulo}")
+
+        elif opcion == "4":
+            titulo = input("Ingrese el título: ")
+            resultado = catalogo.explorar_en_profundidad(grafo, titulo)
+            if resultado is None:
+                print("No se encontró la película.")
+            else:
+                recorrido, no_alcanzadas = resultado
+                print(f"\nExploración en profundidad desde {recorrido[0][0].titulo}\n")
+                for p, profundidad in recorrido:
+                    print(f"{'   ' * profundidad}{'└─ ' if profundidad else ''}{p.titulo}")
+                alcanzadas = len(recorrido) - 1
+                print(f"\nSe llega a {alcanzadas} {'película' if alcanzadas == 1 else 'películas'}.")
+                if no_alcanzadas:
+                    print(f"No se puede llegar a ({len(no_alcanzadas)}): {', '.join(p.titulo for p in no_alcanzadas)}")
 
         else:
             print("Opción inválida.")

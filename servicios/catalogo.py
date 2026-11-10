@@ -132,6 +132,38 @@ def camino_entre(grafo: GrafoPeliculas, origen: str, destino: str) -> list[Pelic
     return grafo.camino_mas_corto(origen, destino)
 
 
+def grados_de_separacion(grafo: GrafoPeliculas, titulo: str) -> list[tuple[int, list[Pelicula]]] | None:
+    """Películas alcanzables agrupadas por distancia en saltos (BFS): [(1, [...]), (2, [...]), ...]."""
+    recorrido = grafo.bfs(titulo)
+
+    if recorrido is None:
+        return None
+
+    niveles = []
+    for pelicula, distancia in recorrido[1:]:
+        if not niveles or niveles[-1][0] != distancia:
+            niveles.append((distancia, []))
+        niveles[-1][1].append(pelicula)
+
+    return niveles
+
+
+def explorar_en_profundidad(grafo: GrafoPeliculas, titulo: str) -> tuple[list[tuple[Pelicula, int]], list[Pelicula]] | None:
+    """Recorrido DFS desde una película y las películas a las que no se puede llegar desde ella."""
+    recorrido = grafo.dfs(titulo)
+
+    if recorrido is None:
+        return None
+
+    alcanzadas = {p.titulo for p, _ in recorrido}
+    no_alcanzadas = sorted(
+        (p for p in grafo.peliculas() if p.titulo not in alcanzadas),
+        key=lambda p: p.titulo.lower()
+    )
+
+    return recorrido, no_alcanzadas
+
+
 def dibujar_categorias(arbol: ArbolCategorias) -> list[str]:
     return arbol.dibujar()
 

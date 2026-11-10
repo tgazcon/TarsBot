@@ -2,7 +2,7 @@
 
 Trabajo práctico de Estructura de Datos. Sistema de recomendación y exploración de películas mediante una interfaz de terminal.
 
-Permite buscar películas por título, explorar por género, consultar el top 10 mejor valoradas, encontrar películas relacionadas a partir de una que ya le gustó al usuario, ver el catálogo completo ordenado alfabéticamente y explorar una jerarquía de categorías.
+Permite buscar películas por título, explorar por género, consultar el top 10 mejor valoradas, encontrar películas relacionadas a partir de una que ya le gustó al usuario, ver el catálogo completo ordenado alfabéticamente, explorar una jerarquía de categorías y recorrer la red de películas relacionadas.
 
 ## Versión 2: árbol binario de búsqueda
 
@@ -83,6 +83,20 @@ Las relaciones entre películas se modelan como un **grafo** ([servicios/grafo.p
 
 La justificación y ejemplos de consultas están en [Docs/10-Grafo.md](Docs/10-Grafo.md).
 
+## Versión 6: recorridos del grafo (BFS y DFS)
+
+El grafo tiene ahora los dos recorridos clásicos ([servicios/grafo.py](servicios/grafo.py)). Los dos visitan los vecinos de la conexión más fuerte a la más débil:
+
+- **BFS (búsqueda en anchura)**: usa una cola y visita por niveles, primero las películas a 1 salto, después las de 2, y así. Devuelve cada película con su distancia en saltos. El camino más corto de la versión 5 ahora usa este mismo BFS.
+- **DFS (búsqueda en profundidad)**: es recursivo, así que la pila es la de llamadas, y sigue una rama hasta el final antes de volver atrás. Devuelve cada película con su profundidad en el árbol de exploración.
+
+Cada recorrido resuelve una consulta del submenú **Red de películas** (opción 7):
+
+- **Grados de separación (BFS)**: "¿qué tan lejos está cada película de Matrix?". Agrupa las películas alcanzables por distancia. Es BFS porque la distancia en saltos es justamente el nivel en que BFS descubre cada película.
+- **Explorar en profundidad (DFS)**: "¿a dónde me lleva seguir recomendaciones desde Matrix?". Muestra la cadena de recomendaciones como un árbol con sangría y lista las películas a las que no se puede llegar.
+
+Los dos cuestan O(V + E). Qué hace cada uno, cuándo conviene cada uno y en qué se diferencian está en [Docs/11-Recorridos.md](Docs/11-Recorridos.md).
+
 ## Requisitos
 
 - Python 3.10 o superior (se desarrolló con Python 3.13)
@@ -124,8 +138,8 @@ Tarsbot/
 │   ├── avl.py                # Árbol AVL: inserción con rotaciones, búsqueda y recorridos
 │   ├── arbol_general.py      # Árbol general de categorías: búsquedas, recorridos y dibujo
 │   ├── heap.py               # Heap binaria de máximos: insertar, extraer y construir
-│   ├── grafo.py              # Grafo de películas (lista de adyacencia): vecinos y camino más corto
-│   └── catalogo.py           # Lógica: cargar, buscar, filtrar, top, relacionadas, catálogo A-Z, categorías
+│   ├── grafo.py              # Grafo de películas (lista de adyacencia): vecinos, BFS, DFS y camino más corto
+│   └── catalogo.py           # Lógica: cargar, buscar, filtrar, top, relacionadas, catálogo A-Z, categorías, red
 ├── ui/
 │   └── terminal.py           # Menú e interacción por input()
 ├── tests/
@@ -136,7 +150,7 @@ Tarsbot/
 │   └── test_grafo.py         # Pruebas automáticas del grafo
 ├── datos/
 │   └── peliculas.json        # Catálogo con 30 películas
-└── Docs/                     # Requerimientos, casos de uso, diagramas e informes (complejidad, AVL, categorías, heap y grafo)
+└── Docs/                     # Requerimientos, casos de uso, diagramas e informes (complejidad, AVL, categorías, heap, grafo y recorridos)
 ```
 
 Cada capa tiene una responsabilidad única:
@@ -153,7 +167,7 @@ Cada capa tiene una responsabilidad única:
 4. **Películas relacionadas**: a partir de un título (buscado en el árbol), muestra un Top 5 de las películas que comparten género o director, ordenadas por un puntaje que combina valoración y parecido.
 5. **Catálogo completo (A-Z)**: lista todas las películas ordenadas por título usando el recorrido inorder del árbol.
 6. **Explorar categorías**: abre un submenú para ver el árbol de categorías, listar las películas de una categoría (por ejemplo `Drama` o `Cyberpunk`) o saber en qué categoría está una película.
-7. **Red de películas**: abre un submenú para ver las conexiones de una película (de la más fuerte a la más débil) o el camino más corto entre dos películas.
+7. **Red de películas**: abre un submenú para ver las conexiones de una película (de la más fuerte a la más débil), el camino más corto entre dos películas, los grados de separación desde una película (BFS) o explorar en profundidad la cadena de recomendaciones (DFS).
 8. **Salir**: termina el programa.
 
 ## Pruebas
@@ -190,7 +204,7 @@ python -m unittest -v
 
 [tests/test_heap.py](tests/test_heap.py) verifica que la heap extrae de mayor a menor, el desempate por orden de entrada, que el Top 10 coincide con ordenar la lista y que el ranking de recomendaciones está ordenado y no incluye a la película elegida.
 
-[tests/test_grafo.py](tests/test_grafo.py) verifica, con el grafo de ejemplo de la consigna, que es no dirigido y que el camino más corto funciona (incluyendo los casos sin camino), y con el catálogo real que el peso de las aristas es la afinidad.
+[tests/test_grafo.py](tests/test_grafo.py) verifica, con el grafo de ejemplo de la consigna, que es no dirigido, que el camino más corto funciona (incluyendo los casos sin camino) y el orden exacto de BFS (por niveles) y de DFS (rama por rama), que visitan las mismas películas en distinto orden. Con el catálogo real verifica que el peso de las aristas es la afinidad, que los grados de separación coinciden con el largo del camino más corto, que DFS arranca por la conexión más fuerte y que las películas no alcanzadas, como Coco, quedan afuera.
 
 ### Comparación de estrategias
 
