@@ -1,6 +1,6 @@
 # Explorá la red: BFS y DFS
 
-En la versión 5 armamos el grafo de películas: cada película es un vértice y dos películas están conectadas si se parecen (ver [10-Grafo.md](10-Grafo.md)). En esta versión agregamos los dos recorridos clásicos de grafos, la **búsqueda en anchura (BFS)** y la **búsqueda en profundidad (DFS)**, y los usamos para responder dos preguntas reales sobre el catálogo. Los dos están en [servicios/grafo.py](../servicios/grafo.py).
+En la versión 5 armamos el grafo de películas: cada película es un vértice y dos películas están conectadas si se parecen (ver [10-Grafo.md](10-Grafo.md)). En esta versión agregamos los dos recorridos clásicos de grafos, la búsqueda en anchura (BFS) y la búsqueda en profundidad (DFS), y los usamos para responder dos preguntas reales sobre el catálogo. Los dos están en [servicios/grafo.py](../servicios/grafo.py).
 
 ## Qué hace cada algoritmo
 
