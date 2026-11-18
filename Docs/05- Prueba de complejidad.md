@@ -1,4 +1,4 @@
-¿Qué tan rápido es?
+# ¿Qué tan rápido es?
 
 En esta parte del proyecto elegimos como operación crítica la búsqueda de una película por título, ya que es una de las funciones principales de TARSbot. El usuario puede ingresar el nombre de una película y el sistema busca si se encuentra dentro del catálogo.
 
@@ -14,7 +14,7 @@ En un árbol equilibrado, el mejor caso es Ω(1), cuando la película se encuent
 
 Para comparar ambas estrategias realizamos pruebas con 100, 1.000 y 10.000 películas. Los tiempos se midieron utilizando el archivo `prueba_complejidad.py` y la función `time.perf_counter()`.
 
-Los resultados obtenidos fueron:
+## Los resultados obtenidos fueron:
 
 | Cantidad de películas | Búsqueda secuencial | Búsqueda en árbol |
 |---|---:|---:|

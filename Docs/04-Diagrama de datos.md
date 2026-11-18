@@ -112,7 +112,7 @@ n es la cantidad de películas, N la de categorías, V las películas del grafo 
 | Grafo | `grafo.py` | Opción 7 | Vecinos, BFS y DFS | O(V + E) | Las relaciones entre películas forman una red y es poco denso (27%) |
 | Árbol AVL | `avl.py` | No está en el menú | Insertar con rotaciones | O(log n) garantizado | Mostrar qué pasa cuando el BST se desbalancea |
 
-Los recorridos de BFS y DFS cuestan O(V + E) y, como los vecinos se ordenan por afinidad antes de visitarlos, suman un factor logarítmico (el detalle está en [11-Recorridos.md](11-Recorridos.md)).
+Los recorridos de BFS y DFS cuestan O(V + E) y, como los vecinos se ordenan por afinidad antes de visitarlos, suman un factor logarítmico (el detalle está en [11-Recorridos.md](10-Recorridos.md)).
 
 ## Dónde se usan BFS y DFS
 

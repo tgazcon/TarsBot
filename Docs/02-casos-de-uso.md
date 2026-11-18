@@ -1,7 +1,5 @@
 # Casos de uso
 
-TARSbot es un sistema de recomendación y exploración de películas que se usa desde una terminal. El único actor es el **usuario**: una persona aficionada al cine que tiene dificultades para decidir qué película ver y no necesita saber cómo funciona el programa por dentro.
-
 Al iniciar, el programa carga el catálogo (30 películas) y arma las estructuras de datos. Después muestra el menú principal y lo repite hasta que el usuario elige Salir. Si se ingresa una opción que no existe, muestra "Opción inválida." y vuelve a pedirla.
 
 ```
